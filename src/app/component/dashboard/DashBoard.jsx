@@ -36,13 +36,21 @@ const DashBoard = () => {
     }
   };
 
-  // Filter data theo search term
-  const filteredRegistrations = registrations.filter(reg =>
-    reg.student_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    reg.phone.includes(searchTerm) ||
-    reg.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    reg.cccd.includes(searchTerm)
-  );
+  // Filter data theo search term - sửa lại để xử lý null/undefined
+  const filteredRegistrations = registrations.filter(reg => {
+    if (!searchTerm) return true; // Nếu không có search term thì hiển thị tất cả
+    
+    const searchLower = searchTerm.toLowerCase();
+    
+    return (
+      (reg.student_name && reg.student_name.toLowerCase().includes(searchLower)) ||
+      (reg.phone && reg.phone.toString().includes(searchTerm)) ||
+      (reg.email && reg.email.toLowerCase().includes(searchLower)) ||
+      (reg.cccd && reg.cccd.toString().includes(searchTerm)) ||
+      (reg.parent_name && reg.parent_name.toLowerCase().includes(searchLower)) ||
+      (reg.parent_phone && reg.parent_phone.toString().includes(searchTerm))
+    );
+  });
 
   // Pagination
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -305,7 +313,7 @@ const DashBoard = () => {
                     </td>
                     <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
                       {registration.parent_phone}
-                      </td>
+                    </td>
                     <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
                       {registration.ward}, {registration.city}
                     </td>
@@ -327,8 +335,8 @@ const DashBoard = () => {
           </table>
         </div>
 
-                {/* Pagination */}
-                {totalPages > 1 && (
+        {/* Pagination */}
+        {totalPages > 1 && (
           <div className="bg-gray-50 px-4 py-3 flex items-center justify-between border-t">
             <div className="flex-1 flex justify-between sm:hidden">
               <button
@@ -430,11 +438,9 @@ const DashBoard = () => {
             </div>
           </div>
         )}
-
       </div>
     </div>
   )
 }
 
 export default DashBoard
-
