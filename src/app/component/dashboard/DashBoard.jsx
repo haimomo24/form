@@ -327,8 +327,8 @@ const DashBoard = () => {
           </table>
         </div>
 
-        {/* Pagination */}
-        {totalPages > 1 && (
+                {/* Pagination */}
+                {totalPages > 1 && (
           <div className="bg-gray-50 px-4 py-3 flex items-center justify-between border-t">
             <div className="flex-1 flex justify-between sm:hidden">
               <button
@@ -364,19 +364,59 @@ const DashBoard = () => {
                     Trước
                   </button>
                   
-                  {[...Array(totalPages)].map((_, i) => (
-                    <button
-                      key={i + 1}
-                      onClick={() => setCurrentPage(i + 1)}
-                      className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
-                        currentPage === i + 1
-                          ? 'z-10 bg-[#d4a017] border-[#d4a017] text-white'
-                          : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
-                      }`}
-                    >
-                      {i + 1}
-                    </button>
-                  ))}
+                  {/* Hiển thị trang đầu */}
+                  {currentPage > 3 && (
+                    <>
+                      <button
+                        onClick={() => setCurrentPage(1)}
+                        className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                      >
+                        1
+                      </button>
+                      {currentPage > 4 && (
+                        <span className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
+                          ...
+                        </span>
+                      )}
+                    </>
+                  )}
+                  
+                  {/* Hiển thị các trang xung quanh trang hiện tại */}
+                  {Array.from({ length: totalPages }, (_, i) => i + 1)
+                    .filter(page => {
+                      if (totalPages <= 7) return true; // Hiển thị tất cả nếu ít hơn 7 trang
+                      return page >= currentPage - 2 && page <= currentPage + 2;
+                    })
+                    .map(page => (
+                      <button
+                        key={page}
+                        onClick={() => setCurrentPage(page)}
+                        className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
+                          currentPage === page
+                            ? 'z-10 bg-[#d4a017] border-[#d4a017] text-white'
+                            : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    ))}
+                  
+                  {/* Hiển thị trang cuối */}
+                  {currentPage < totalPages - 2 && (
+                    <>
+                      {currentPage < totalPages - 3 && (
+                        <span className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
+                          ...
+                        </span>
+                      )}
+                      <button
+                        onClick={() => setCurrentPage(totalPages)}
+                        className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                      >
+                        {totalPages}
+                      </button>
+                    </>
+                  )}
                   
                   <button
                     onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
@@ -390,6 +430,7 @@ const DashBoard = () => {
             </div>
           </div>
         )}
+
       </div>
     </div>
   )
