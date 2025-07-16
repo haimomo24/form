@@ -27,40 +27,40 @@ const HomePage = () => {
 
   // Danh sách tỉnh thành
   const provinces = [
-    "Thành phố Hà Nội",
-    "Tỉnh Cao Bằng",
-    "Tỉnh Tuyên Quang",
-    "Tỉnh Điện Biên",
-    "Tỉnh Lai Châu",
-    "Tỉnh Sơn La",
-    "Tỉnh Lào Cai",
-    "Tỉnh Thái Nguyên",
-    "Tỉnh Lạng Sơn",
-    "Tỉnh Quảng Ninh",
-    "Tỉnh Bắc Ninh",
-    "Tỉnh Phú Thọ",
-    "Thành phố Hải Phòng",
-    "Tỉnh Hưng Yên",
-    "Tỉnh Ninh Bình",
-    "Tỉnh Thanh Hóa",
-    "Tỉnh Nghệ An",
-    "Tỉnh Hà Tĩnh",
-    "Tỉnh Quảng Trị",
-    "Thành phố Huế",
-    "Thành phố Đà Nẵng",
-    "Tỉnh Quảng Ngãi",
-    "Tỉnh Gia Lai",
-    "Tỉnh Khánh Hòa",
-    "Tỉnh Đắk Lắk",
-    "Tỉnh Lâm Đồng",
-    "Tỉnh Đồng Nai",
+    " Hà Nội",
+    " Cao Bằng",
+    " Tuyên Quang",
+    " Điện Biên",
+    " Lai Châu",
+    " Sơn La",
+    " Lào Cai",
+    " Thái Nguyên",
+    " Lạng Sơn",
+    " Quảng Ninh",
+    " Bắc Ninh",
+    " Phú Thọ",
+    " Hải Phòng",
+    " Hưng Yên",
+    " Ninh Bình",
+    " Thanh Hóa",
+    " Nghệ An",
+    " Hà Tĩnh",
+    " Quảng Trị",
+    " phố Huế",
+    " phố Đà Nẵng",
+    " Quảng Ngãi",
+    " Gia Lai",
+    " Khánh Hòa",
+    " Đắk Lắk",
+    " Lâm Đồng",
+    " Đồng Nai",
     "Thành phố Hồ Chí Minh",
-    "Tỉnh Tây Ninh",
-    "Tỉnh Đồng Tháp",
-    "Tỉnh Vĩnh Long",
-    "Tỉnh An Giang",
+    " Tây Ninh",
+    " Đồng Tháp",
+    " Vĩnh Long",
+    " An Giang",
     "Thành phố Cần Thơ",
-    "Tỉnh Cà Mau"
+    " Cà Mau"
   ];
 
   // Lọc tỉnh theo từ khóa tìm kiếm
@@ -99,6 +99,14 @@ const HomePage = () => {
         ...prev,
         birthday: birthdayError
       }));
+    } else if (name === 'gender') {
+      // Clear gender error khi đã chọn
+      if (value !== '') {
+        setErrors(prev => ({
+          ...prev,
+          gender: ''
+        }));
+      }
     } else {
       setErrors(prev => ({
         ...prev,
@@ -128,6 +136,14 @@ const HomePage = () => {
     setIsSubmitting(true);
     setMessage('');
     setErrors({});
+
+    // Validate giới tính
+    if (!formData.gender || formData.gender === '') {
+      setErrors({ gender: 'Vui lòng chọn giới tính' });
+      setMessage('Vui lòng chọn giới tính');
+      setIsSubmitting(false);
+      return;
+    }
 
     const birthdayError = validateBirthday(formData.birthday);
     if (birthdayError) {
@@ -219,13 +235,18 @@ const HomePage = () => {
               name="gender"
               value={formData.gender}
               onChange={handleInputChange}
-              className="p-2 rounded text-black text-sm bg-[#FFFFFF]"
+              className={`p-2 rounded text-black text-sm bg-[#FFFFFF] ${
+                errors.gender ? 'border-2 border-red-500' : ''
+              }`}
               required
             >
-              <option value="">Chọn</option>
+              <option value="">-- Chọn giới tính --</option>
               <option value="Nam">Nam</option>
               <option value="Nữ">Nữ</option>
             </select>
+            {errors.gender && (
+              <span className="text-red-300 text-xs mt-1">{errors.gender}</span>
+            )}
           </div>
 
           <div className="flex flex-col">
@@ -367,19 +388,19 @@ const HomePage = () => {
           <div className="flex flex-col md:col-span-2">
             <label className="mb-1 text-sm">Xã, Phường (*)</label>
             <input 
-              type="text" 
-              name="ward"
-              value={formData.ward}
-              onChange={handleInputChange}
-              placeholder="Nhập tên xã, phường" 
-              className="p-2 rounded text-black text-sm bg-[#FFFFFF]" 
-              required
-            />
-          </div>
-
-          <div className="flex flex-col md:col-span-2">
-            <label className="mb-1 text-sm">Đăng ký khóa trải nghiệm (*)</label>
-            <select 
+                           type="text" 
+                           name="ward"
+                           value={formData.ward}
+                           onChange={handleInputChange}
+                           placeholder="Nhập tên xã, phường" 
+                           className="p-2 rounded text-black text-sm bg-[#FFFFFF]" 
+                           required
+                         />
+                       </div>
+             
+                       <div className="flex flex-col md:col-span-2">
+                         <label className="mb-1 text-sm">Đăng ký khóa trải nghiệm (*)</label>
+                         <select 
                            name="course"
                            value={formData.course}
                            onChange={handleInputChange}

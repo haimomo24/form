@@ -80,8 +80,7 @@ const DashBoard = () => {
         'CCCD': reg.cccd,
         'Tên phụ huynh': reg.parent_name,
         'SĐT phụ huynh': reg.parent_phone,
-        'Tỉnh/Thành phố': reg.city,
-        'Xã/Phường': reg.ward,
+        'Địa chỉ': `${reg.ward}, ${reg.city}`,
         'Khóa tu': reg.course,
         'Ngày đăng ký': formatDateTime(reg.created_at)
       }));
@@ -101,8 +100,7 @@ const DashBoard = () => {
         { wch: 15 },  // CCCD
         { wch: 25 },  // Tên phụ huynh
         { wch: 15 },  // SĐT phụ huynh
-        { wch: 20 },  // Tỉnh/TP
-        { wch: 20 },  // Xã/Phường
+        { wch: 30 },  // Địa chỉ
         { wch: 30 },  // Khóa tu
         { wch: 18 }   // Ngày đăng ký
       ];
@@ -290,7 +288,7 @@ const DashBoard = () => {
                       {registration.parent_phone}
                       </td>
                     <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {registration.city}, {registration.ward}
+                      {registration.ward}, {registration.city}
                     </td>
                     <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
                       {registration.created_at ? formatDateTime(registration.created_at) : 'N/A'}
