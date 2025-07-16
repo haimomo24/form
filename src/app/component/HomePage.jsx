@@ -122,7 +122,7 @@ const HomePage = () => {
       
       {message && (
         <div className={`mb-4 p-3 rounded text-center ${
-          message.includes('thành công') ? 'bg-green-500' : 'bg-red-500'
+          message.includes('thành công') ? 'bg-blue-600' : 'bg-red-500'
         }`}>
           {message}
         </div>
@@ -301,7 +301,7 @@ const HomePage = () => {
           </div>
 
           <div className="flex flex-col md:col-span-2">
-            <label className="mb-1 text-sm">Khóa tu đăng ký (*)</label>
+            <label className="mb-1 text-sm">Đăng ký khóa trải nghiệm (*)</label>
             <select 
               name="course"
               value={formData.course}

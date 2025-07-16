@@ -8,7 +8,7 @@ const FooterPage = () => {
       <div className="max-w-[1200px] mx-auto px-5 flex items-center justify-between flex-wrap relative">
         {/* Logo bên trái */}
         <div className="mb-3 md:mb-0">
-        <Link href="/dashboard" className="inline-block">
+        <Link href="/login" className="inline-block">
   <img
     src="https://chuabaidinhninhbinh.com/upload/news/icon//30.2023/130x60px.png"
     alt="Logo Chùa Bái Đính"
