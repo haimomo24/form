@@ -63,18 +63,22 @@ const DashBoard = () => {
   };
 
   const formatDateTime = (dateString) => {
-    const date = new Date(dateString);
-    // Trừ đi 5 giờ để điều chỉnh (vì hiện tại nhanh hơn 2 tiếng so với thực tế)
-    const vietnamTime = new Date(date.getTime() + (5 * 60 * 60 * 1000));
+    // Loại bỏ 'Z' và coi như đây là giờ local Việt Nam
+    const localDateString = dateString.replace('Z', '');
+    const date = new Date(localDateString);
     
-    return vietnamTime.toLocaleString('vi-VN', {
+    return date.toLocaleString('vi-VN', {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
+      hour12: false
     });
   };
+  
+  
+  
 
   // Thêm function để format giới tính
   const formatGender = (gender) => {
