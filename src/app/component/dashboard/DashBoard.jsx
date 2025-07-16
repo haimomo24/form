@@ -55,13 +55,32 @@ const DashBoard = () => {
   };
 
   const formatDateTime = (dateString) => {
-    return new Date(dateString).toLocaleString('vi-VN', {
+    const date = new Date(dateString);
+    // Trừ đi 5 giờ để điều chỉnh (vì hiện tại nhanh hơn 2 tiếng so với thực tế)
+    const vietnamTime = new Date(date.getTime() + (5 * 60 * 60 * 1000));
+    
+    return vietnamTime.toLocaleString('vi-VN', {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
       hour: '2-digit',
       minute: '2-digit'
     });
+  };
+
+  // Thêm function để format giới tính
+  const formatGender = (gender) => {
+    if (!gender) return 'N/A';
+    
+    const genderStr = gender.toString().toLowerCase().trim();
+    
+    if (genderStr === 'n?' || genderStr === 'nữ' || genderStr === 'nu' || genderStr === 'female' || genderStr === 'f') {
+      return 'Nữ';
+    } else if (genderStr === 'nam' || genderStr === 'male' || genderStr === 'm') {
+      return 'Nam';
+    }
+    
+    return gender; // Trả về giá trị gốc nếu không match
   };
 
   // Xuất Excel
@@ -73,7 +92,7 @@ const DashBoard = () => {
       const excelData = filteredRegistrations.map((reg, index) => ({
         'STT': index + 1,
         'Họ và tên': reg.student_name,
-        'Giới tính': reg.gender,
+        'Giới tính': formatGender(reg.gender),
         'Ngày sinh': formatDate(reg.birthday),
         'Số điện thoại': reg.phone,
         'Email': reg.email,
@@ -267,7 +286,7 @@ const DashBoard = () => {
                       {registration.student_name}
                     </td>
                     <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {registration.gender}
+                      {formatGender(registration.gender)}
                     </td>
                     <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
                       {formatDate(registration.birthday)}
