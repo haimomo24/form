@@ -8,22 +8,25 @@ const FooterPage = () => {
       <div className="max-w-[1200px] mx-auto px-5 flex items-center justify-between flex-wrap relative">
         {/* Logo bên trái */}
         <div className="mb-3 md:mb-0">
-        <Link href="/login" className="inline-block">
-  <img
-    src="https://chuabaidinhninhbinh.com/upload/news/icon//30.2023/130x60px.png"
-    alt="Logo Chùa Bái Đính"
-    className="w-[130px] h-[60px] border-2 border-[#8b1414] rounded-[10px] p-[5px] mr-[30px] object-contain object-center bg-[#8b1414] max-md:mr-0 max-md:mb-[10px] cursor-pointer hover:opacity-80 hover:scale-105 transition-all duration-200"
-  />
-</Link>
+          <Link href="/login" className="inline-block">
+            <img
+              src="https://chuabaidinhninhbinh.com/upload/news/icon//30.2023/130x60px.png"
+              alt="Logo Chùa Bái Đính"
+              className="w-[130px] h-[60px] border-2 border-[#8b1414] rounded-[10px] p-[5px] mr-[30px] object-contain object-center bg-[#8b1414] max-md:mr-0 max-md:mb-[10px] cursor-pointer hover:opacity-80 hover:scale-105 transition-all duration-200"
+            />
+          </Link>
         </div>
 
         {/* Nội dung ở giữa */}
         <div className="flex-1 px-5 text-sm text-center md:text-left mb-3 md:mb-0">
-          <p>Địa chỉ: Xóm 6, phường Tây Hoa Lư, tỉnh Ninh Bình</p>
-          <p>
-            Điện thoại: 0913899135 &nbsp; E-mail:
-            baidinh@chuabaidinh.com.vn
-          </p>
+          <p className="mb-2">Địa chỉ: Xóm 6, phường Tây Hoa Lư, tỉnh Ninh Bình</p>
+          <div className="mb-2">
+            <span>Điện thoại: </span>
+            <div className="mt-1">
+              0915 299 388 (Ms. Dung) / 0916 625 135 (Ms. Hạnh) / 0366 046 333 (Ms. Thu)
+            </div>
+          </div>
+          <p>Email: hrm@trangangroup.com</p>
         </div>
 
         {/* Biểu tượng mạng xã hội */}
