@@ -20,6 +20,53 @@ const HomePage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState('');
   const [errors, setErrors] = useState({});
+  
+  // State cho dropdown tỉnh thành
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // Danh sách tỉnh thành
+  const provinces = [
+    "Thành phố Hà Nội",
+    "Tỉnh Cao Bằng",
+    "Tỉnh Tuyên Quang",
+    "Tỉnh Điện Biên",
+    "Tỉnh Lai Châu",
+    "Tỉnh Sơn La",
+    "Tỉnh Lào Cai",
+    "Tỉnh Thái Nguyên",
+    "Tỉnh Lạng Sơn",
+    "Tỉnh Quảng Ninh",
+    "Tỉnh Bắc Ninh",
+    "Tỉnh Phú Thọ",
+    "Thành phố Hải Phòng",
+    "Tỉnh Hưng Yên",
+    "Tỉnh Ninh Bình",
+    "Tỉnh Thanh Hóa",
+    "Tỉnh Nghệ An",
+    "Tỉnh Hà Tĩnh",
+    "Tỉnh Quảng Trị",
+    "Thành phố Huế",
+    "Thành phố Đà Nẵng",
+    "Tỉnh Quảng Ngãi",
+    "Tỉnh Gia Lai",
+    "Tỉnh Khánh Hòa",
+    "Tỉnh Đắk Lắk",
+    "Tỉnh Lâm Đồng",
+    "Tỉnh Đồng Nai",
+    "Thành phố Hồ Chí Minh",
+    "Tỉnh Tây Ninh",
+    "Tỉnh Đồng Tháp",
+    "Tỉnh Vĩnh Long",
+    "Tỉnh An Giang",
+    "Thành phố Cần Thơ",
+    "Tỉnh Cà Mau"
+  ];
+
+  // Lọc tỉnh theo từ khóa tìm kiếm
+  const filteredProvinces = provinces.filter(province =>
+    province.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const validateBirthday = (birthday) => {
     if (!birthday) return 'Ngày sinh là bắt buộc';
@@ -46,7 +93,6 @@ const HomePage = () => {
       [name]: value
     }));
 
-    // Validate ngày sinh khi người dùng thay đổi
     if (name === 'birthday') {
       const birthdayError = validateBirthday(value);
       setErrors(prev => ({
@@ -54,12 +100,27 @@ const HomePage = () => {
         birthday: birthdayError
       }));
     } else {
-      // Xóa error của field khác khi người dùng nhập
       setErrors(prev => ({
         ...prev,
         [name]: ''
       }));
     }
+  };
+
+  // Xử lý chọn tỉnh
+  const handleProvinceSelect = (province) => {
+    setFormData(prev => ({
+      ...prev,
+      city: province
+    }));
+    setSearchTerm('');
+    setIsDropdownOpen(false);
+  };
+
+  // Xử lý tìm kiếm tỉnh
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+    setIsDropdownOpen(true);
   };
 
   const handleSubmit = async (e) => {
@@ -68,7 +129,6 @@ const HomePage = () => {
     setMessage('');
     setErrors({});
 
-    // Validate ngày sinh trước khi submit
     const birthdayError = validateBirthday(formData.birthday);
     if (birthdayError) {
       setErrors({ birthday: birthdayError });
@@ -78,7 +138,7 @@ const HomePage = () => {
     }
 
     try {
-      const response = await fetch('/api/register', {
+      const response = await fetch('/api/registrations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -90,7 +150,6 @@ const HomePage = () => {
 
       if (response.ok) {
         setMessage('Đăng ký thành công!');
-        // Reset form
         setFormData({
           student_name: '',
           gender: '',
@@ -106,7 +165,18 @@ const HomePage = () => {
         });
         setErrors({});
       } else {
-        setMessage(result.error || 'Có lỗi xảy ra khi đăng ký');
+        if (result.duplicateFields) {
+          const newErrors = {};
+          if (result.duplicateFields.phone) {
+            newErrors.phone = 'Số điện thoại đã được đăng ký';
+          }
+          if (result.duplicateFields.cccd) {
+            newErrors.cccd = 'Số căn cước đã được đăng ký';
+          }
+          setErrors(newErrors);
+        }
+        
+        setMessage(result.message || result.error || 'Có lỗi xảy ra khi đăng ký');
       }
     } catch (error) {
       setMessage('Lỗi kết nối. Vui lòng thử lại!');
@@ -187,9 +257,14 @@ const HomePage = () => {
               name="phone"
               value={formData.phone}
               onChange={handleInputChange}
-              className="p-2 rounded text-black text-sm bg-[#FFFFFF]" 
+              className={`p-2 rounded text-black text-sm bg-[#FFFFFF] ${
+                errors.phone ? 'border-2 border-red-500' : ''
+              }`}
               required
             />
+            {errors.phone && (
+              <span className="text-red-300 text-xs mt-1">{errors.phone}</span>
+            )}
           </div>
 
           <div className="flex flex-col">
@@ -211,9 +286,14 @@ const HomePage = () => {
               name="cccd"
               value={formData.cccd}
               onChange={handleInputChange}
-              className="p-2 rounded text-black text-sm bg-[#FFFFFF]" 
+              className={`p-2 rounded text-black text-sm bg-[#FFFFFF] ${
+                errors.cccd ? 'border-2 border-red-500' : ''
+              }`}
               required
             />
+            {errors.cccd && (
+              <span className="text-red-300 text-xs mt-1">{errors.cccd}</span>
+            )}
           </div>
 
           <div className="flex flex-col">
@@ -240,51 +320,48 @@ const HomePage = () => {
             />
           </div>
 
-          <div className="flex flex-col">
+          {/* Custom dropdown cho tỉnh thành */}
+          <div className="flex flex-col relative">
             <label className="mb-1 text-sm">Địa chỉ liên hệ (*)</label>
-            <select 
-              name="city"
-              value={formData.city}
-              onChange={handleInputChange}
-              className="p-2 rounded text-black text-sm bg-[#FFFFFF]"
-              required
-            >
-              <option value="">Chọn Tỉnh/Thành Phố</option>
-              <option value="Thành phố Hà Nội">Thành phố Hà Nội</option>
-              <option value="Tỉnh Cao Bằng">Tỉnh Cao Bằng</option>
-              <option value="Tỉnh Tuyên Quang">Tỉnh Tuyên Quang</option>
-              <option value="Tỉnh Điện Biên">Tỉnh Điện Biên</option>
-              <option value="Tỉnh Lai Châu">Tỉnh Lai Châu</option>
-              <option value="Tỉnh Sơn La">Tỉnh Sơn La</option>
-              <option value="Tỉnh Lào Cai">Tỉnh Lào Cai</option>
-              <option value="Tỉnh Thái Nguyên">Tỉnh Thái Nguyên</option>
-              <option value="Tỉnh Lạng Sơn">Tỉnh Lạng Sơn</option>
-              <option value="Tỉnh Quảng Ninh">Tỉnh Quảng Ninh</option>
-              <option value="Tỉnh Bắc Ninh">Tỉnh Bắc Ninh</option>
-              <option value="Tỉnh Phú Thọ">Tỉnh Phú Thọ</option>
-              <option value="Thành phố Hải Phòng">Thành phố Hải Phòng</option>
-              <option value="Tỉnh Hưng Yên">Tỉnh Hưng Yên</option>
-              <option value="Tỉnh Ninh Bình">Tỉnh Ninh Bình</option>
-              <option value="Tỉnh Thanh Hóa">Tỉnh Thanh Hóa</option>
-              <option value="Tỉnh Nghệ An">Tỉnh Nghệ An</option>
-              <option value="Tỉnh Hà Tĩnh">Tỉnh Hà Tĩnh</option>
-              <option value="Tỉnh Quảng Trị">Tỉnh Quảng Trị</option>
-              <option value="Thành phố Huế">Thành phố Huế</option>
-              <option value="Thành phố Đà Nẵng">Thành phố Đà Nẵng</option>
-              <option value="Tỉnh Quảng Ngãi">Tỉnh Quảng Ngãi</option>
-              <option value="Tỉnh Gia Lai">Tỉnh Gia Lai</option>
-              <option value="Tỉnh Khánh Hòa">Tỉnh Khánh Hòa</option>
-              <option value="Tỉnh Đắk Lắk">Tỉnh Đắk Lắk</option>
-              <option value="Tỉnh Lâm Đồng">Tỉnh Lâm Đồng</option>
-              <option value="Tỉnh Đồng Nai">Tỉnh Đồng Nai</option>
-              <option value="Thành phố Hồ Chí Minh">Thành phố Hồ Chí Minh</option>
-              <option value="Tỉnh Tây Ninh">Tỉnh Tây Ninh</option>
-              <option value="Tỉnh Đồng Tháp">Tỉnh Đồng Tháp</option>
-              <option value="Tỉnh Vĩnh Long">Tỉnh Vĩnh Long</option>
-              <option value="Tỉnh An Giang">Tỉnh An Giang</option>
-              <option value="Thành phố Cần Thơ">Thành phố Cần Thơ</option>
-              <option value="Tỉnh Cà Mau">Tỉnh Cà Mau</option>
-            </select>
+            <div className="relative">
+              <input
+                type="text"
+                value={formData.city || searchTerm}
+                onChange={handleSearchChange}
+                onFocus={() => setIsDropdownOpen(true)}
+                placeholder="Tìm kiếm tỉnh/thành phố..."
+                className="p-2 rounded text-black text-sm bg-[#FFFFFF] w-full"
+                required
+              />
+              
+              {isDropdownOpen && (
+                <div className="absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-b max-h-48 overflow-y-auto z-10">
+                  {filteredProvinces.length > 0 ? (
+                    filteredProvinces.map((province, index) => (
+                      <div
+                        key={index}
+                        onClick={() => handleProvinceSelect(province)}
+                        className="p-2 text-black text-sm hover:bg-gray-100 cursor-pointer"
+                      >
+                        {province}
+                      </div>
+                    ))
+                  ) : (
+                    <div className="p-2 text-black text-sm text-gray-500">
+                      Không tìm thấy tỉnh/thành phố
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+            
+            {/* Click outside để đóng dropdown */}
+            {isDropdownOpen && (
+              <div 
+                className="fixed inset-0 z-5"
+                onClick={() => setIsDropdownOpen(false)}
+              />
+            )}
           </div>
 
           <div className="flex flex-col md:col-span-2">
@@ -303,34 +380,34 @@ const HomePage = () => {
           <div className="flex flex-col md:col-span-2">
             <label className="mb-1 text-sm">Đăng ký khóa trải nghiệm (*)</label>
             <select 
-              name="course"
-              value={formData.course}
-              onChange={handleInputChange}
-              className="p-2 rounded text-black text-sm bg-[#FFFFFF]"
-              required
-            >
-              <option value="Tuổi trẻ tri ân - Trở về nguồn sáng">Tuổi trẻ tri ân - Trở về nguồn sáng</option>
-            </select>
-          </div>
-
-          <div className="md:col-span-2 text-right">
-            <button
-              type="submit"
-              disabled={isSubmitting || errors.birthday}
-              className={`font-bold px-5 py-2 rounded ${
-                isSubmitting || errors.birthday
-                  ? 'bg-gray-500 cursor-not-allowed' 
-                  : 'bg-[#b32626] hover:bg-[#931d1d]'
-                } text-white`}
-              >
-                {isSubmitting ? 'Đang xử lý...' : 'Đăng ký'}
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
-    )
-  }
-  
-  export default HomePage
-  
+                           name="course"
+                           value={formData.course}
+                           onChange={handleInputChange}
+                           className="p-2 rounded text-black text-sm bg-[#FFFFFF]"
+                           required
+                         >
+                           <option value="Tuổi trẻ tri ân - Trở về nguồn sáng">Tuổi trẻ tri ân - Trở về nguồn sáng</option>
+                         </select>
+                       </div>
+             
+                       <div className="md:col-span-2 text-right">
+                         <button
+                           type="submit"
+                           disabled={isSubmitting || errors.birthday}
+                           className={`font-bold px-5 py-2 rounded ${
+                             isSubmitting || errors.birthday
+                               ? 'bg-gray-500 cursor-not-allowed' 
+                               : 'bg-[#b32626] hover:bg-[#931d1d]'
+                           } text-white`}
+                           >
+                             {isSubmitting ? 'Đang xử lý...' : 'Đăng ký'}
+                           </button>
+                         </div>
+                       </div>
+                     </form>
+                   </div>
+                 )
+               }
+               
+               export default HomePage
+             

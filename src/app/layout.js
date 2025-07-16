@@ -15,7 +15,12 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   title: "Đăng kí khóa sinh",
-  description: "",
+  description: "Đăng kí khóa sinh",
+  icons: {
+    icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStBTkvGG1_accmUjeNgyfuZWikuAnyLCSa-w&s', 
+    sizes: '130x60', 
+    type: 'image/png'
+  },
 };
 
 export default function RootLayout({ children }) {
