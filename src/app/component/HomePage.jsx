@@ -412,7 +412,7 @@ const HomePage = () => {
                        </div>
              
                        <div className="md:col-span-2 text-right">
-                         <button
+                         {/* <button
                            type="submit"
                            disabled={isSubmitting || errors.birthday}
                            className={`font-bold px-5 py-2 rounded ${
@@ -422,7 +422,8 @@ const HomePage = () => {
                            } text-white`}
                            >
                              {isSubmitting ? 'Đang xử lý...' : 'Đăng ký'}
-                           </button>
+                           </button> */}
+                           <p>Hiện tại đã đủ số lượng khóa sinh </p>
                          </div>
                        </div>
                      </form>
