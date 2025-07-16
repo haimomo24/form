@@ -48,7 +48,9 @@ const DashBoard = () => {
       (reg.email && reg.email.toLowerCase().includes(searchLower)) ||
       (reg.cccd && reg.cccd.toString().includes(searchTerm)) ||
       (reg.parent_name && reg.parent_name.toLowerCase().includes(searchLower)) ||
-      (reg.parent_phone && reg.parent_phone.toString().includes(searchTerm))
+      (reg.parent_phone && reg.parent_phone.toString().includes(searchTerm)) ||
+      (reg.ward && reg.ward.toLowerCase().includes(searchLower)) ||
+      (reg.city && reg.city.toLowerCase().includes(searchLower))
     );
   });
 
@@ -76,9 +78,6 @@ const DashBoard = () => {
       hour12: false
     });
   };
-  
-  
-  
 
   // Thêm function để format giới tính
   const formatGender = (gender) => {
@@ -111,7 +110,8 @@ const DashBoard = () => {
         'CCCD': reg.cccd,
         'Tên phụ huynh': reg.parent_name,
         'SĐT phụ huynh': reg.parent_phone,
-        'Địa chỉ': `${reg.ward}, ${reg.city}`,
+        'Xã/Phường': reg.ward,
+        'Tỉnh/Thành phố': reg.city,
         'Khóa tu': reg.course,
         'Ngày đăng ký': formatDateTime(reg.created_at)
       }));
@@ -131,7 +131,8 @@ const DashBoard = () => {
         { wch: 15 },  // CCCD
         { wch: 25 },  // Tên phụ huynh
         { wch: 15 },  // SĐT phụ huynh
-        { wch: 30 },  // Địa chỉ
+        { wch: 20 },  // Xã/Phường
+        { wch: 20 },  // Tỉnh/Thành phố
         { wch: 30 },  // Khóa tu
         { wch: 18 }   // Ngày đăng ký
       ];
@@ -221,7 +222,7 @@ const DashBoard = () => {
             <div className="flex items-center gap-2">
               <input
                 type="text"
-                placeholder="Tìm kiếm theo tên, SĐT, email, CCCD..."
+                placeholder="Tìm kiếm theo tên, SĐT, email, CCCD, địa chỉ..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d4a017] w-80"
@@ -276,7 +277,8 @@ const DashBoard = () => {
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CCCD</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phụ huynh</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SĐT PH</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Địa chỉ</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Xã/Phường</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tỉnh/TP</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày ĐK</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thao tác</th>
               </tr>
@@ -284,7 +286,7 @@ const DashBoard = () => {
             <tbody className="bg-white divide-y divide-gray-200">
               {currentItems.length === 0 ? (
                 <tr>
-                  <td colSpan="12" className="px-4 py-8 text-center text-gray-500">
+                  <td colSpan="13" className="px-4 py-8 text-center text-gray-500">
                     {searchTerm ? 'Không tìm thấy kết quả phù hợp' : 'Chưa có đăng ký nào'}
                   </td>
                 </tr>
@@ -319,7 +321,10 @@ const DashBoard = () => {
                       {registration.parent_phone}
                     </td>
                     <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {registration.ward}, {registration.city}
+                      {registration.ward}
+                    </td>
+                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {registration.city}
                     </td>
                     <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
                       {registration.created_at ? formatDateTime(registration.created_at) : 'N/A'}
@@ -338,9 +343,8 @@ const DashBoard = () => {
             </tbody>
           </table>
         </div>
-
-        {/* Pagination */}
-        {totalPages > 1 && (
+         {/* Pagination */}
+         {totalPages > 1 && (
           <div className="bg-gray-50 px-4 py-3 flex items-center justify-between border-t">
             <div className="flex-1 flex justify-between sm:hidden">
               <button
